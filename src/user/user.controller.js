@@ -5,6 +5,10 @@ const AuthService = require("../auth/auth.service");
 const router = express.Router();
 
 router.post("/", (req, res) => {
+  if (!email || !password) {
+    return res.status(400).send("Missing email or password");
+  }
+
   if (UserService.getUserFromEmail(req.body.email)[0]) {
     return res.status(400).send("User already exists");
   }
@@ -15,6 +19,11 @@ router.post("/", (req, res) => {
 
 router.post("/login", (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send("Missing email or password");
+  }
+
   AuthService.login(email, password)
     .then((token) => {
       res.json({ token }).send();
@@ -25,7 +34,7 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.get("/", AuthService.JwtMiddleware,(req, res) => {
+router.get("/", AuthService.JwtMiddleware, (req, res) => {
   UserService.getAllUsers()
     .then((users) => {
       res.json(users).send();
@@ -38,6 +47,11 @@ router.get("/", AuthService.JwtMiddleware,(req, res) => {
 
 router.delete("/:id", AuthService.JwtMiddleware, (req, res) => {
   const id = req.params.id;
+
+  if (!id) {
+    return res.status(400).send("Missing id");
+  }
+
   UserService.deleteUser(id)
     .then((user) => {
       res.json(user).send();
