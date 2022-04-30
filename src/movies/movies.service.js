@@ -1,14 +1,17 @@
 const Parse = require('parse/node');
 const Movies = require('./movies.entity');
+const logger = require('../utils/logger.service');
 
 class MoviesService {
 
   static getAllMovies() {
     const query = new Parse.Query(Movies);
     return query.find().then((movies) => {
+      logger.info("MoviesService.getAllMovies: " + movies);
       return movies;
     }, (error) => {
-      console.log(error);
+      logger.error(error);
+      throw new Error("Error getting movies");
     });
   }
 
@@ -16,9 +19,11 @@ class MoviesService {
     const query = new Parse.Query(Movies);
     query.equalTo('data.title', title);
     return query.find().then((movies) => {
+      logger.info("MoviesService.getMovieFromTitle: " + movies);
       return movies;
     }, (error) => {
-      console.log(error);
+      logger.error(error);
+      throw new Error("Error getting movie");
     });
   }
 
@@ -26,9 +31,11 @@ class MoviesService {
     const query = new Parse.Query(Movies);
     query.equalTo('data.date', date);
     return query.find().then((movies) => {
+      logger.info("MoviesService.getMovieFromDate: " + movies);
       return movies;
     }, (error) => {
-      console.log(error);
+      logger.error(error);
+      throw new Error("Error getting movie");
     });
   }
 
@@ -43,12 +50,15 @@ class MoviesService {
       movie.set('image', newMovie.image);
       movie.set('description', newMovie.description);
       return movie.save().then(() => {
+        logger.info("MoviesService.updateMovie: " + movie);
         return movie;
       }, (error) => {
-        console.log(error);
+        logger.error(error);
+        throw new Error("Error updating movie");
       });
     }, (error) => {
-      console.log(error);
+      logger.error(error);
+      throw new Error("Error updating movie");
     });
   }
 
@@ -58,12 +68,15 @@ class MoviesService {
     return query.find().then((movies) => {
       const movie = movies[0];
       return movie.destroy().then(() => {
+        logger.info("MoviesService.deleteMovie: " + movie);
         return movie;
       }, (error) => {
-        console.log(error);
+        logger.error(error);
+        throw new Error("Error deleting movie");
       });
     }, (error) => {
-      console.log(error);
+      logger.error(error);
+      throw new Error("Error deleting movie");
     });
   }
 }

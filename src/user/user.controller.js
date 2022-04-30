@@ -57,8 +57,7 @@ router.delete("/:id", AuthService.JwtMiddleware, (req, res) => {
       res.json(user).send();
     })
     .catch((error) => {
-      console.log(error);
-      res.status(401).send(error);
+      res.status(501).send(error);
     });
 });
 

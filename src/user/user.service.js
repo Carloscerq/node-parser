@@ -1,5 +1,6 @@
 const Parse = require("parse/node");
 const User = require("./user.entity");
+const logger = require("../utils/logger.service");
 
 class UserService {
   static getUserFromEmail(email) {
@@ -7,10 +8,12 @@ class UserService {
     query.equalTo("data.email", email);
     return query.find().then(
       (users) => {
+        logger.info("UserService.getUserFromEmail: " + users);
         return users;
       },
       (error) => {
-        console.log(error);
+        logger.error(error);
+        throw new Error("Error getting user");
       }
     );
   }
@@ -22,10 +25,12 @@ class UserService {
       const user = users[0];
       return user.destroy().then(
         () => {
+          logger.info("UserService.deleteUser: " + user);
           return user;
         },
         (error) => {
-          console.log(error);
+          logger.error(error);
+          throw new Error("Error deleting user");
         }
       );
     });
@@ -35,10 +40,12 @@ class UserService {
     const query = new Parse.Query(User);
     return query.find().then(
       (users) => {
+        logger.info("UserService.getAllUsers: " + users);
         return users;
       },
       (error) => {
-        console.log(error);
+        logger.error(error);
+        throw new Error("Error getting users");
       }
     );
   }
